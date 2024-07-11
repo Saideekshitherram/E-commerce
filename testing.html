@@ -1,0 +1,148 @@
+<html>
+<head>
+    <title>Dashboard</title>
+    <link href="styles2.css" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <img src="icon.png">
+        <button>Home</button>
+        <button>Offers</button>
+        <button onclick="showCart()">Cart</button>
+        <p style="font-size: medium; font-weight: 800;width: 120px;margin-top: 35px;margin-left: 40px;">Items in cart:</p>
+        <p style="font-size: medium;font-weight: 800; margin-left: -5px;margin-top: 35px;margin-right: 20px;" id="counter" name="counter" >0</p>
+        <button style="width: 130px;" onclick="addItem()">Add item</button>
+        <img class="user" onclick="window.location.href='home.html'" src="user.png">
+    </nav>
+
+    <div class="c" id="c">
+    </div>
+
+    <script>
+        var h= 1000;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            show();
+            updateCounter();
+        });
+
+        function show() {
+            var container = document.getElementById("c");
+            var items = JSON.parse(localStorage.getItem("dashboard")) || [];
+            items.forEach(function (item) {
+                var newItem = create(item);
+                container.appendChild(newItem);
+            });
+        }
+
+        function create(item) {
+            var div = document.createElement("div");
+            div.className = "i";
+            div.id = itemId;
+
+            var name = document.createElement("h3");
+            name.innerHTML =  item.name;
+
+            var price = document.createElement("h3");
+            price.innerHTML = item.price;
+
+            var id = document.createElement("h3");
+            var itemId =h++;
+            id.innerHTML = "Item ID: " + itemId.toString();
+
+            var image = document.createElement("img");
+
+            if (item.hasOwnProperty("imageUrl")) {
+                image.src = item.imageUrl;
+                image.alt = item.name;
+                image.style.width = "100px"; 
+            } else {
+                console.warn("Item object is missing 'imageUrl' property:", item);
+                image.alt = "No Image";
+            }
+            var asalu=0;
+            var minus=document.createElement("button");
+            minus.innerHTML="-";
+            minus.style.height = "50px";
+            minus.style.width = "50px";
+            minus.onclick=function(){
+                var s = document.getElementById("asaluLekka").innerHTML;
+                var u=--s;
+                document.getElementById("asaluLekka").innerHTML=u;
+            }
+
+            var q=document.createElement("button");
+            q.id="asaluLekka";
+            q.innerHTML=0;
+            q.style.width="150px";
+
+            var plus=document.createElement("button");
+            plus.innerHTML="+";
+            plus.style.height = "50px";
+            plus.style.width = "50px";
+            plus.onclick=function(){
+                var s = document.getElementById("asaluLekka").innerHTML;
+                var u=++s;
+                console.log(u);
+                document.getElementById("asaluLekka").innerHTML=u;
+            }
+
+            var addButton = document.createElement("button");
+            addButton.innerHTML = "Add to cart";
+            addButton.onclick = function () {
+                addToCart(image.src, item.name, item.price, item.id);
+            };
+
+            var buyButton=document.createElement("button");
+            buyButton.innerHTML="Buy now";
+            buyButton.onclick=function(){
+                alert("Order placed! Order ID:" + itemId);
+            }
+
+            div.append(image);
+            div.append(name);
+            div.append(price);
+            div.append(minus);
+            div.append(q);
+            div.append(plus);
+            div.append(id);
+            div.append(addButton);
+            div.append(buyButton);
+
+            return div;
+        }
+        function addToCart(img, itemName, price, itemId) {
+            var cart = JSON.parse(localStorage.getItem("cart")) || [];
+            //checking for duplicate items
+
+
+            var asalu=1;
+            cart.push({
+                "name": itemName,
+                "price": price,
+                "quantity":asalu,
+                "id": itemId,
+                "imageUrl": img
+            });
+            localStorage.setItem("cart", JSON.stringify(cart));
+            updateCounter();
+        }
+
+        function showCart() {
+            window.location.href = "myCart.html";
+        }
+
+        function addItem() {
+            window.location.href = "addForm.html";
+        }
+
+        function updateCounter(){
+            var t = JSON.parse(localStorage.getItem("cart"))||[];
+            var c= t.length;
+            document.getElementById("c").innerHTML="";
+            show();
+            document.getElementById("counter").innerHTML=c;
+        }
+    </script>
+</body>
+</html>

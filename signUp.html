@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign up</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="box">
+        <form method="post" onsubmit="check(event)">
+            <label for="uid">User name </label>
+            <input type="text" name="uid" id="uid" placeholder="Enter a new user name" required><br><br>
+            <label for="mail">Email</label>
+            <input type="email" name="mail" id="mail" placeholder="Enter your email" required><br><br>
+            <label for="pwd1">Password</label>
+            <input type="password" name="pwd1" id="pwd1" placeholder="Enter a password" required><br><br>
+            <label for="pwd2">Confirm Password</label>
+            <input type="password" name="pwd2" id="pwd2" placeholder="Enter password again" required><br><br>
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+    <script>
+        function check(event) {
+            event.preventDefault();
+
+            var uid = document.getElementById("uid").value;
+            var a = /^[a-zA-Z]+[a-zA-Z0-9._-]*$/;
+
+            var mail = document.getElementById("mail").value;
+            var b = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            var p1 = document.getElementById("pwd1").value;
+            var p2 = document.getElementById("pwd2").value;
+            var passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*_\-+=]).{8,}$/;
+
+            if (a.test(uid)) {
+                if (b.test(mail)) {
+                    if (passwordPattern.test(p1)) {
+                        if (p1 === p2) {
+                            var users = JSON.parse(localStorage.getItem("users")) || [];
+                            var res = false;
+
+                            for (var i = 0; i < users.length; i++) {
+                                if (users[i].username === uid || users[i].email === mail) {
+                                    res = true;
+                                    break;
+                                }
+                            }
+
+                            if (!res) {
+                                var newUser = {
+                                    username: uid,
+                                    email: mail,
+                                    password: p1,
+                                    userid: users.length + 8000
+                                };
+                                users.push(newUser);
+
+                                localStorage.setItem("users", JSON.stringify(users));
+
+                                alert("Form submitted successfully! New user added.");
+                                window.location.href = "login.html";
+                            } else {
+                                alert("Username or email already exists. Please choose a different one.");
+                            }
+                        } else {
+                            alert("Both passwords should be the same!");
+                        }
+                    } else {
+                        alert("Password should be at least 8 characters long and include at least one digit, one lowercase letter, one uppercase letter, and one special character!");
+                    }
+                } else {
+                    alert("Invalid email format!");
+                }
+            } else {
+                alert("Invalid username format! Only letters, numbers, and ._- characters are allowed.");
+            }
+            window.location.href='logIn.html';
+        }
+    </script>
+</body>
+</html>

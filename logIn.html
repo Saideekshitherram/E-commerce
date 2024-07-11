@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="box">
+        <form method="get" onsubmit="check(event)">
+            <label for="username">Username</label><br>
+            <input type="text" name="username" id="username" required><br><br>
+            <label for="pwd">Password</label><br>
+            <input type="password" name="pwd" id="pwd" required><br><br>
+            <button type="submit">Sign in</button>
+        </form>
+    </div>
+    <script>
+        function check(event) {
+            event.preventDefault();
+
+            var uname= document.getElementById("username").value;
+            var pwd= document.getElementById("pwd").value;
+            var users = JSON.parse(localStorage.getItem("users")) || [];
+            
+            var user = users.find(function (user) {
+                return user.username === uname && user.password === pwd;
+            });
+
+            if (user) {
+                // Store user information in sessionStorage
+                sessionStorage.setItem("username", user.username);
+                sessionStorage.setItem("userid", user.userid);
+
+                // Redirect to src.html
+                window.location.href = "src.html";
+            } else {
+                alert("Please enter correct username and password");
+            }
+        }
+    </script>
+</body>
+</html>
